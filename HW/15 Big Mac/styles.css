@@ -1,0 +1,48 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+.wrapper {
+    /* background: no-repeat url(Task1.jpg); */
+    max-width: 1230px;
+    padding-left: 0.5rem;
+    padding-top: 0.5rem;
+    letter-spacing: 0.005rem; 
+}
+.article{
+    min-height: 9rem;  
+}
+.article p {
+    line-height: 1.15rem;
+}
+.article h1{
+    margin-bottom: 1.4rem;
+}
+
+table {
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    border-top: 1px solid gray;
+    border-left: 1px solid gray; 
+    empty-cells: hide;
+    }
+    th, td {
+        border-right: 1px solid gray;
+        border-bottom: 1px solid gray;
+        border-top: 1px solid black;
+        border-left: 1px solid black; 
+        padding: 1.5px 1px;
+    }
+.table {
+    min-height: 7.5rem;
+}
+.facts {
+    margin-top: 1rem;
+}
+.facts ol {
+    margin-left: 2.2rem;
+    margin-top:1rem;
+}
+.facts li {
+    padding-left: 0.25rem;
+}
