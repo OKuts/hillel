@@ -1,0 +1,8 @@
+.wrapper {
+    max-width: 400px;
+    margin: 0 auto;
+}
+input {
+    padding: 10px;
+    margin: 10px;
+}
