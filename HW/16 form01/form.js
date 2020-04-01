@@ -9,16 +9,15 @@ function formCreate(objForm) {
         f.innerHTML = `<legend>${objForm.legend}</legend>`;
     }
     objForm.inputs.forEach(elAtr => {
-        if (elAtr.label) {
+        if (elAtr[1].label) {
             tempInput = document.createElement("label");
-            tempInput.setAttribute('for', elAtr.name);
-            tempInput.innerHTML = elAtr.label;
+            tempInput.setAttribute('for', elAtr[1].name);
+            tempInput.innerHTML = elAtr[1].label;
             f.appendChild(tempInput);
         }
-        tempInput = document.createElement("input");
-        for (let atr in elAtr) {
-
-            tempInput.setAttribute(atr, elAtr[atr]);
+        tempInput = document.createElement(elAtr[0]);
+        for (let atr in elAtr[1]) {
+            tempInput.setAttribute(atr, elAtr[1][atr]);
         }
         f.appendChild(tempInput);
         f.appendChild(document.createElement("br"));
@@ -35,13 +34,12 @@ let parametrsForm = {
         action: 'https://google.com/',
         method: 'get'
     },
-    inputs: [
-        { type: 'text', name: 'name', label: 'Фамилия Имя Отчество:' },
-        { type: 'fone', placeholder: '(XXX)-XXX-XXXX', name: 'phone', label: 'Номер телефона:' },
-        { type: 'email', placeholder: 'user@gmail.com', name: 'email', label: 'Адрес электронной почты:' },
-        { type: 'number', name: 'age', label: 'Возраст:' },
-        { type: 'text', name: 'comment', placeholder: 'Не более 50 символов', maxlength: "50", label: 'Личные качества:' },
-        { type: 'submit', name: 'Push', value: "Отправить форму" }
+    inputs: [['input', { type: 'text', name: 'name', label: 'Фамилия Имя Отчество:' }],
+    ['input', { type: 'fone', placeholder: '(XXX)-XXX-XXXX', name: 'phone', label: 'Номер телефона:' }],
+    ['input', { type: 'email', placeholder: 'user@gmail.com', name: 'email', label: 'Адрес электронной почты:' }],
+    ['input', { type: 'number', name: 'age', label: 'Возраст:' }],
+    ['textarea', { name: 'comment', placeholder: 'Не более 200 символов', maxlength: "200", label: 'Личные качества:' }],
+    ['input', { type: 'submit', name: 'push', value: 'Отправить форму' }],
     ]
 }
 //---------------------------------------------------------------------------------------------

@@ -1,11 +1,14 @@
+* {
+    margin: 5px;
+    padding: 0;
+}
 .wrapper {
-    max-width: 50em;
+    max-width: 40em;
     margin: 0 auto;
     font-size: 20px;
 }
 input {
     padding: 0.2em;
-    margin: 0.5em;
     width: 20em;
     font-size: 20px;
 }
@@ -15,13 +18,18 @@ input[type=number]{
 input[type=fone]{
     width: 8em;
 }
-input[name=comment]{
-    width: 30em;
-}
 label {
     display: inline-block;
     width: 12em;
 }
 .personal {
     background: #ccc;
+}
+textarea {
+    font-size: 20px;
+    width: 38em;
+    min-height: 5em;
+    resize: vertical;
+    display: block;
+    margin: 0 auto;
 }
