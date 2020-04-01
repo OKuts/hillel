@@ -25,7 +25,7 @@ function formCreate(objForm) {
     f.innerHTML = `<fieldset>${f.innerHTML}</fieldset>`;
     return f;
 }
-// ----------------------------параметры формы imput----------------------------------------------
+// ----------------------------параметры формы ----------------------------------------------
 let parametrsForm = {
     legend: 'Ввод данных:',
     atributs: {
@@ -45,6 +45,6 @@ let parametrsForm = {
 //---------------------------------------------------------------------------------------------
 const mainContainer = document.createElement("div"); // mainContainer
 mainContainer.classList.add('wrapper');
-const myForm = formCreate(parametrsForm); // -------------создание формы из imput---------------
+const myForm = formCreate(parametrsForm); // -------------создание формы ---------------
 mainContainer.appendChild(myForm);
 document.body.appendChild(mainContainer);
