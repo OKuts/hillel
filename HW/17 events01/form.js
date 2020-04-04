@@ -193,5 +193,5 @@ document.addEventListener('DOMContentLoaded',function(){
   document.body.appendChild(mainContainer);
   //------------- беру заложников и навешиваю события --------------
   let selectInput = document.querySelectorAll('.personal input[type=submit]');
-  selectInput.forEach(item => item.addEventListener('focus', Controller.eventForm));
+  selectInput.forEach(item => item.addEventListener('click', Controller.eventForm));
 })
