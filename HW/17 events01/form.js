@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded',function(){
       ['input', { type: 'text', name: 'surname', label: 'Фамилия :' }],
       ['input', { type: 'number', name: 'age', min: '1', max: '100', label: 'Возраст:' }],
       ['input', { type: 'submit', name: 'add', value: 'Add' }],
-      ['input', { type: 'submit', name: 'del', value: 'Delete' }],
+      ['input', { type: 'submit', name: 'del', value: 'Show' }],
       ['input', { type: 'reset', name: 'clean', value: 'Clean' }]
     ]
   }
