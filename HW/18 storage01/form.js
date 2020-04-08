@@ -32,8 +32,11 @@ document.addEventListener('DOMContentLoaded', function () {
             say.style.display = 'block'
             document.body.appendChild(say);
             say.innerText = words;
-            setTimeout(() => say.style.display = 'none', 2000);
-            //document.body.removeChild(say); позаниматься асинхронностью пока прошу прощения за дополнительный мусор
+            setTimeout(() => cl(), 2000);
+            function cl() {
+                say.style.display = 'none';
+                document.body.removeChild(say);
+            }
         }
     }
     class ViewChange {
