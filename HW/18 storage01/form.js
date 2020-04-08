@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.appendChild(say);
             say.innerText = words;
             setTimeout(() => say.style.display = 'none', 2000);
+            //document.body.removeChild(say); позаниматься асинхронностью пока прошу прощения за дополнительный мусор
         }
     }
     class ViewChange {
