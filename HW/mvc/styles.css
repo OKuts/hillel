@@ -1,0 +1,63 @@
+* {
+    margin: 5px;
+    padding: 0;
+}
+.wrapper {
+    max-width: 35em;
+    margin: 0 auto;
+    font-size: 20px;
+    position: relative;
+ 
+}
+input[type=text]{
+    width: 20em;
+}
+input[type=number]{
+    width: 3em;
+}
+input {
+    font-size: 20px;
+    padding: 0.2em;
+}
+label {
+    display: inline-block;
+    width: 5em;
+}
+.personal {
+    background: #ccc;
+    padding-bottom: 0.1em;
+    position: absolute;
+}
+.no-show,
+.no-showForm {
+    display: none;
+}
+.element {
+    background: rgb(224, 223, 223);
+    min-width: 20em;
+    display: flex;
+
+}
+.element span {
+    min-width: 18em;
+}
+.del button {
+    width: 2.8em;
+    height: 1.8em;
+    background-color: aqua;
+    clear: none;
+}
+.del {
+    min-width: 25em;
+    margin: auto;
+}
+.say {
+    position: absolute;
+    background: #ccc;
+    border: 2px solid rgb(68, 47, 255);
+    left: 48%;
+    top: 10%; 
+    font-size: 23px;
+    padding: 10px;   
+    transform: rotate(10deg);
+}
