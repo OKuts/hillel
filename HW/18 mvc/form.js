@@ -1,3 +1,4 @@
+"use strict"
 document.addEventListener('DOMContentLoaded', function () {
     class Model {
         constructor() {
@@ -46,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let field = document.querySelectorAll('.fields');
             let fields = Array.from(field);
             if (fields.every((item) => (item.value || item.placeholder))) {
-                console.log(arrPerson[numberElement]);
                 arrPerson[numberElement].name = fields[0].value || fields[0].placeholder;
                 arrPerson[numberElement].surname = fields[1].value || fields[1].placeholder;
                 arrPerson[numberElement].age = fields[2].value || fields[2].placeholder;
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
                 case 'b': { //возврвщение на форму ввода
                     this.viewInit.changeFormShow('.add');
-                    arrPerson.length ? this.viewInit.viewInput('', 1, 1) : this.viewInit.viewInput('', 1);
+                    arrPerson.length ? this.viewInit.viewInput('', 1, 1) : this.viewInit.viewInput('', 1, 0);
                 }
                     break;
                 case 'e': { //редактирование
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     this.viewDel.showFormDel(arrPerson);
                     if (!arrPerson.length) {
                         this.viewInit.changeFormShow('.add');
-                        // this.viewInit.viewInput(1);
+                        this.viewInit.viewInput('', 1, 0);
                     }
                 }
                     break;
@@ -199,8 +199,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     this.model.personEditWrite(numberEdit, arrPerson);
                     this.viewDel.showFormDel(arrPerson);
                     this.viewInit.changeFormShow('.del');
-                    arrPerson.length ? this.viewInit.viewInput('Ввод данных:', 1, 1) : this.viewInit.viewInput('Ввод данных:', 1);
-                    //document.querySelector('.add legend').innerText = 'Ввод данных ';
+                    arrPerson.length
+                        ? this.viewInit.viewInput('Ввод данных:', 1, 1)
+                        : this.viewInit.viewInput('Ввод данных:', 1);
                 }
                     break;
                 default: flag = false;
