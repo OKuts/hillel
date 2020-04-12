@@ -1,7 +1,9 @@
-"use strict"
+
 document.addEventListener('DOMContentLoaded', function () {
+    "use strict"
+    //******************************** модель *********************
     class Model {
-        constructor() {
+        constructor() {//------------- шаблон формы ввода/редактирования ---------------------
             this.formAdd = {
                 legend: 'Ввод данных:',
                 atributs: {
@@ -18,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     ['input', { type: 'submit', name: 'rewrite', value: 'Done' }]
                 ]
             }
-            this.formDel = {
+            this.formDel = {//------------- шаблон формы просмора/удаления ---------------------
                 legend: 'Удаление',
                 atributs: {
                     class: 'del personal no-showForm',
@@ -30,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ]
             }
         }
+        //----------------------------------создание объекта и дабавление в массив ----------
         personCreate(arrPerson) {
             let fields = Array.from(document.querySelectorAll('.fields'));
             if (fields.every((item) => (item.value))) {
@@ -39,10 +42,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 return true;
             } else return false;
         }
+        //-------------------------- удаление объекта из массива -------------------------
         personDelete(numberElement, arrPerson) {
             numberElement = parseInt(numberElement);
             arrPerson.splice(numberElement, 1);
         }
+        //-------------------------- внесение изменений данных объекта ------------------
         personEditWrite(numberElement, arrPerson) {
             let field = document.querySelectorAll('.fields');
             let fields = Array.from(field);
@@ -55,9 +60,9 @@ document.addEventListener('DOMContentLoaded', function () {
             } else return false;
         }
     }
-    // ********************************************************************
+    // ************************* инициализация форм и общие методы **************
     class ViewInit {
-        constructor() { }
+        //------------------------------ создание форм -------------------------
         showFormInit(objForm) {
             let tempInput, flagBr;
             let form = document.createElement("form");
@@ -82,10 +87,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (flagBr) form.appendChild(document.createElement("br"));
             })
             form.innerHTML = `<fieldset>${form.innerHTML}</fieldset>`;
-            //form.addEventListener('click', Controller.eventClick);
             document.querySelector('.wrapper').appendChild(form);
             return form;
         }
+        // ----------------------- тут будет вывод всплывающего окна ---------------
         sayResult(words) {
             let say = document.createElement('div');
             say.classList.add('say');
@@ -97,12 +102,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.body.removeChild(say);
             }
         }
+        // --- смена отображения форм (позже применить массив с идентификаторами форм) --
         changeFormShow(formShow) {
             let formNoShow;
             formShow === '.add' ? formNoShow = '.del' : formNoShow = '.add';
             document.querySelector(formShow).classList.remove('no-showForm');
             document.querySelector(formNoShow).classList.add('no-showForm');
         }
+        // --- смена отображения инпутов (позже применить массив с идентификаторами инпутов) --
         viewInput(legend, ...flag) {
             if (legend) document.querySelector('.add legend').innerText = legend;
             let show = document.querySelectorAll('.add input[type = "submit"]');
@@ -111,8 +118,9 @@ document.addEventListener('DOMContentLoaded', function () {
             })
         }
     }
-    // ********************************************************************
+    // ************** представления формы ввода/редактирования **********************
     class ViewAdd {
+        // ------------- пока только изменения для редактирования формы -----------
         personEdit(numberElement, arrPerson) {
             let field = document.querySelectorAll('.fields');
             field[0].placeholder = arrPerson[numberElement].name;
@@ -121,8 +129,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     }
-    // ********************************************************************
+    // ********************* представления формы просмора/удаления ********************
     class ViewDel {
+        // ---- переписывание элементов формы просмора/удаления ------------------------
         showFormDel(arrPerson) {
             let formList = document.querySelector('.del fieldset');
             this._cleanFormDel(formList, 'div', 'button');
@@ -137,6 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 formList.insertBefore(elementAdd, lastEl);
             })
         }
+        // ----------служебная удаления элементов HTML формы просмора/удаления ----------------
         _cleanFormDel(parent, ...el) {
             el.forEach((item) => {
                 while (parent.querySelector(item)) {
@@ -145,7 +155,7 @@ document.addEventListener('DOMContentLoaded', function () {
             })
         }
     }
-    // ********************************************************************
+    // ************************* диспетчер событий ***************
     class Controller {
         constructor(model, viewInit, viewAdd, viewDel) {
             this.model = model
@@ -153,7 +163,8 @@ document.addEventListener('DOMContentLoaded', function () {
             this.viewAdd = viewAdd
             this.viewDel = viewDel
         }
-        eventClick(objEvent) {
+        // ------------- обработчик событий по первой букве имени элемента -------
+        _eventClick(objEvent) {
             let arrPerson = [], numberEdit;
             let flag = true;
             if (localStorage.myArr && JSON.parse(localStorage.myArr).length) {
@@ -204,18 +215,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         : this.viewInit.viewInput('Ввод данных:', 1);
                 }
                     break;
-                default: flag = false;
-                    break;
+                default: flag = false; // не записывать при событиях на неактуальных элементах
             }
             if (arrPerson && flag) localStorage.setItem('myArr', JSON.stringify(arrPerson));
         }
+        // ------------- инициализация и назначение событий 
         init() {
             document.body.innerHTML = '<div class="wrapper"></div>';
             this.viewInit.showFormInit(this.model.formAdd).addEventListener('click', event => {
-                if (event.target.name) this.eventClick(event.target.name);
+                if (event.target.name) this._eventClick(event.target.name);
             });
             this.viewInit.showFormInit(this.model.formDel).addEventListener('click', event => {
-                if (event.target.name) this.eventClick(event.target.name);
+                if (event.target.name) this._eventClick(event.target.name);
             });
             if (localStorage.myArr && JSON.parse(localStorage.myArr).length) {
                 this.viewInit.viewInput('', 1, 1);
@@ -226,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-    // ******************************************************************
+    // *************************** шабон элемента списка *************
     class Person {
         constructor(name, surname, age) {
             this.name = name,
@@ -234,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.age = age
         }
     }
+    // ****************** создание объекта управления формами ********************
     const controller = new Controller(new Model(), new ViewInit(), new ViewAdd(), new ViewDel());
     controller.init();
 })
