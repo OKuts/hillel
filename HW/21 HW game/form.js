@@ -1,3 +1,4 @@
+"use strict"
 class Result {
     static sayResult() {
         let say = document.createElement('div');
@@ -40,8 +41,8 @@ class MyImg {
     }
 }
 const images = document.querySelectorAll('img');
-img2 = new MyImg(images[0], 100, 200);
-img1 = new MyImg(images[1], 300, 200);
+const img2 = new MyImg(images[0], 100, 200);
+const img1 = new MyImg(images[1], 300, 200);
 img1.setPosition();
 img2.setPosition();
 document.body.addEventListener('keydown', (key) => {
