@@ -1,0 +1,23 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+img {
+    position: absolute;
+    height: 100px;
+    background: #ccc;
+}
+img.a1 {
+    left : 0;
+    top :0;
+}
+img.a2 {
+    left : 400px;
+    top : 400px;
+}
+div {
+    border: 2px solid gray;
+    height: 500px;
+    width: 500px;
+}
