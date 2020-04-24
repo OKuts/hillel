@@ -1,0 +1,16 @@
+.dollar {
+    width: 500px;
+    font-size: 30px;
+    border: 1px solid red;
+    text-align: center;
+}
+select {
+    font-size: 20px;
+}
+#wrap {
+    width: 100%;
+    height: 100vh;
+    font-size: 30px;
+    border: 1px solid red;
+    text-align: center;
+}
