@@ -18,18 +18,17 @@ const show = `
     })
 </script>` ;
 http.createServer((req, res) => {
-    if (req.url === '/') {
-        res.end(show);
-    } else if (req.url === '/users') {
-        console.log(req.url);
-        request('https://jsonplaceholder.typicode.com/users', (err, resp, body) => {
-            console.log(resp.statusMessage);
-            console.log(resp.statusCode);
-            resp.statusCode >= 400 ? res.end(`Ошибка ==> ${resp.statusCode}`) : res.end(body);
-        })
-
-    } else if (req.url === '/favicon.ico') {
-        res.writeHead(200, { 'Content-Type': 'image/x-icon' });
-        res.end();
+    switch (req.url) {
+        case '/': res.end(show);
+            break;
+        case '/users':
+            request('https://jsonplaceholder.typicode.com/users', (err, resp, body) => {
+                resp.statusCode >= 400 ? res.end(`Ошибка ==> ${resp.statusCode}`) : res.end(body);
+            })
+            break;
+        case '/favicon.ico':
+            //res.writeHead(200, { 'Content-Type': 'image/x-icon' });
+            res.end();
+            break;
     }
-}).listen(3000, () => console.log('Run...'));
+}).listen(3000, () => console.log('Server RUN...'));
