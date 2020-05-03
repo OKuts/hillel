@@ -1,11 +1,12 @@
 const http = require('http');
 const request = require('request');
-const show = `<h1>What do you want?</h1> 
-                <form method = "post" action ="/users">
-                    <fieldset> 
-                        <button>Users</button> 
-                    </fieldset> 
-                </form>`;
+const show = `
+<h1>What do you want?</h1> 
+<form method = "post" action ="/users">
+    <fieldset> 
+        <button>Users</button> 
+    </fieldset> 
+</form>`;
 http.createServer((req, res) => {
     if (req.url === '/') {
         res.end(show);
