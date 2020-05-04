@@ -19,15 +19,20 @@ const show = `
 </script>` ;
 http.createServer((req, res) => {
     switch (req.url) {
-        case '/': res.end(show);
+        case '/': {
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(show);
+        }
             break;
-        case '/users':
+        case '/users': {
             request('https://jsonplaceholder.typicode.com/users', (err, resp, body) => {
+                res.writeHead(resp.statusCode, { 'Content-Type': 'text/plain' });
                 resp.statusCode >= 400 ? res.end(`Ошибка ==> ${resp.statusCode}`) : res.end(body);
             })
+        }
             break;
         case '/favicon.ico':
-            //res.writeHead(200, { 'Content-Type': 'image/x-icon' });
+            res.writeHead(200, { 'Content-Type': 'image/x-icon' });
             res.end();
             break;
     }
