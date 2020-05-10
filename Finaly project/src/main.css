@@ -1,9 +1,15 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 .map {
-    width: 1400px;
-    height: 1140px;
+    width:1400px;
+    height: 1000px;
     background: url(./img/map_bg.png);
-    margin: auto;
     position: relative;
+    overflow-x: hidden;
+    margin: auto;
 }
 .top-menu {
     width: 1400px; 
@@ -22,13 +28,11 @@
 }
 .menu {
     width:505px; 
-    height: 1200px;
+    height: 100%;
     border: 2px solid blue;
-    /* display: flex;
-    justify-content: center; 
-    align-items: center; */
     background: #ccc;
     position: absolute;
-    left : 895px;
+    left : 1000px;
     top : 0;
+    
 }
