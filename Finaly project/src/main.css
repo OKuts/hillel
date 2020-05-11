@@ -12,6 +12,7 @@
 .map {
     width:1400px;
     /* height: calc(100%-80px); */
+    height: 800px;
     position: relative;
     overflow-x: hidden;
     margin: auto;

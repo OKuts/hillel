@@ -1,34 +1,40 @@
 document.addEventListener('DOMContentLoaded', function () {
     class View {
-        showMenu() {
-
-        }
-    }
-    class Model {
-        constructor(view) {
-            this.view = view
-        }
         showMainMenu(menu) {
             menu.style.transform = 'translate(-505px,0)';
         }
+        changeInput(id, input) {
+            let i = id === 'location' ? 0 : 1;
+            document.getElementById(id).innerText = input[i].value;
+        }
+    }
+    class Model {
+
     }
     class Controller {
-        constructor(model) {
+        constructor(model, view) {
             this.model = model
+            this.view = view
+            this.input = document.querySelectorAll('.input')
         }
         initClick() {
             document.querySelector('.map').addEventListener('click', event => {
                 switch (event.target.id) {
                     case '222': {
-                        this.model.showMainMenu(document.querySelector('.main-menu'));
+                        this.view.showMainMenu(document.querySelector('.main-menu'));
                     }
                         break;
-                    default:
-                        break;
                 }
+
             })
+            this.input.forEach(el => el.addEventListener('keyup', (event, i) => {
+                console.log(this.input);
+                this.view.changeInput(event.target.id, this.input)
+
+            }));
         }
     }
-    controller = new Controller(new Model(new View()));
+
+    controller = new Controller(new Model(), new View());
     controller.initClick();
 })
