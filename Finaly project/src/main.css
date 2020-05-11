@@ -3,13 +3,18 @@
     margin: 0;
     padding: 0;
 }
+.vrapper {
+    height: 100vh;
+    background: #ccc;
+    
+}
 .map {
     width:1400px;
-    height: 1000px;
-    background: url(./img/map_bg.png);
+    height: calc(100%-80px);
     position: relative;
     overflow-x: hidden;
     margin: auto;
+    position: relative;
 }
 .top-menu {
     width: 1400px; 
@@ -25,14 +30,17 @@
     justify-content: center; 
     align-items: center;
     background: #ccc;
+    position: absolute;
+    top: 50px;
+    left: 50px;
 }
-.menu {
+.main-menu {
     width:505px; 
     height: 100%;
     border: 2px solid blue;
     background: #ccc;
     position: absolute;
-    left : 1000px;
+    left : 850px;
     top : 0;
     
 }
