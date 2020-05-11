@@ -22,10 +22,17 @@ app.get(/\//, (req, res) => {
         way = req.path;
         header = config[req.path.slice(-3)];
     }
-    fs.readFile('./src' + way, 'utf-8', (err, data) => {
-        res.set('Content-Type', header);
-        res.send(data);
-    })
+    if (way != '/ins') {
+        fs.readFile('./src' + way, 'utf-8', (err, data) => {
+            res.set('Content-Type', header);
+            res.send(data);
+        })
+    } else {
+        console.log('3', header)
+        fs.readdir('./src/svg', (err, list) => {
+            res.send(list);
+        })
+    }
 });
 // app.get('/students', (req, res) => {
 //     db.collection('students').find().toArray((err, docs) => {

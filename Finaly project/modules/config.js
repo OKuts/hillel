@@ -2,5 +2,6 @@ module.exports = {
     css: 'text/css',
     png: 'image/png',
     svg: 'image/svg',
-    ico: 'image/x-icon'
+    ico: 'image/x-icon',
+    ins: 'application/json'
 }   
