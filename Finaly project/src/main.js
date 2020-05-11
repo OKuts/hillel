@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
             this.view = view
         }
         showMainMenu(menu) {
-            menu.style.transform = 'translate(-350px,0)';
+            menu.style.transform = 'translate(-505px,0)';
         }
     }
     class Controller {
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
             this.model = model
         }
         initClick() {
-            document.body.querySelector('.map').addEventListener('click', event => {
+            document.querySelector('.map').addEventListener('click', event => {
                 switch (event.target.id) {
                     case '222': {
                         this.model.showMainMenu(document.querySelector('.main-menu'));
