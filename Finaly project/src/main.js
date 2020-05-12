@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let task = '';
             let imgTask = document.getElementById('service');
             arrTask.forEach((el, i) => {
-                task += `<div class = "set-task" id="${'t' + i}">
+                task += `<div class = "set-task">
                             <div class = "service" id="${'a' + i}" >
                                 <img src = "${el.path}" id="${'d' + i}">
                             </div>
@@ -70,10 +70,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     case 'a':
                     case 'd':
                     case 'p': {
-                        event.target.id[0] === 'p'
-                            ? this.prop = parseInt(event.target.id.slice(1))
-                            : this.task = parseInt(event.target.id.slice(1));
-                        console.log(event.target.id.slice(1))
+                        if (event.target.id[0] === 'p') {
+                            this.prop = parseInt(event.target.id.slice(1))
+                        } else {
+                            this.task = parseInt(event.target.id.slice(1));
+                            this.prop = 0;
+                        }
                         this.view.openTasks(this.tasks, this.task, this.prop);
                     }
                         break;
