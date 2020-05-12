@@ -9,24 +9,53 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     class Model {
+        openTasks(arrTask, active) {
+            let task = '';
+            let imgTask = document.getElementById('service');
+            arrTask.forEach((el, i) => {
+                task += `<div class = "set-task" id ="${'t' + i}">
+                            <div class = "service" >
+                                <img src = "${el.path}">
+                            </div>
+                            ${el.name}
+                         </div>`;
+            })
+            imgTask.innerHTML = task;
+            document.querySelectorAll('.service')[active].style.border = "1px solid gray";
+            this.openProp(arrTask[active].list, 0);
+        }
+        openProp(arrProp, active) {
+            console.log(arrProp);
+            let prop = '';
+            let menuProp = document.getElementById('set-task');
+            arrProp.forEach((el, i) => {
+                prop += `<div class = "prop-task" id ="${'p' + i}">${el}</div>`;
+                console.log(el[i]);
+            })
+            menuProp.innerHTML = prop;
+            document.querySelectorAll('.prop-task')[active].style.border = "1px solid gray";
+        }
     }
     class Controller {
         constructor(model, view) {
             this.model = model
             this.view = view
             this.input = document.querySelectorAll('.input')
+            this.tasks = [];
         }
         getTasks() {
             const xhr = new XMLHttpRequest();
             const url = 'http://localhost:3333/ins';
             xhr.open('get', url);
             xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
-                    console.log(xhr.response.slice(2, xhr.response.length - 2).split(/","/));
+                    this.tasks = JSON.parse(xhr.response);
+                    console.log(this.tasks)
+                    controller.model.openTasks(this.tasks, 0);
                 }
             }
+            xhr.send();
         }
         initClick() {
             document.querySelector('.map').addEventListener('click', event => {

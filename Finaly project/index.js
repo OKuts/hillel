@@ -6,6 +6,7 @@ let MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 //---------------------------------------------------------
 const config = require('./modules/config');
+const options = require('./modules/data');
 //---------------------------------------------------------
 let app = express(); //creatung server
 app.use(bodyParser.json());
@@ -16,6 +17,7 @@ const url = 'mongodb://localhost:27017';
 const dbname = "myDB";
 const client = new MongoClient(url, { useUnifiedTopology: true }); //conection
 app.get(/\//, (req, res) => {
+    //console.log(req.path)
     let way = '/index.html';
     let header = 'text/html';
     if (req.path != '/') {
@@ -23,14 +25,14 @@ app.get(/\//, (req, res) => {
         header = config[req.path.slice(-3)];
     }
     if (way != '/ins') {
-        fs.readFile('./src' + way, 'utf-8', (err, data) => {
-            res.set('Content-Type', header);
+        fs.readFile(way, (err, data) => {
+            //res.set('Content-Type', header);
             res.send(data);
         })
     } else {
-        console.log('3', header)
-        fs.readdir('./src/svg', (err, list) => {
-            res.send(list);
+        fs.readdir(way, (err, list) => {
+            res.set('Content-Type', header);
+            res.send(JSON.stringify(options));
         })
     }
 });

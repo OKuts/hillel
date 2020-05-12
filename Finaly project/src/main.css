@@ -44,7 +44,7 @@
     position: absolute;
     left : 1400px;
     top : 0;
-    transition: all 1s ease-in-out;
+    transition: all 0.5s ease-in-out;
 }
 .name {
     color: red;
@@ -60,4 +60,30 @@
 }
 p {
     padding: 10px;
+}
+.service {
+    border-radius: 50%;
+    height: 80px;
+    width: 80px;
+    margin:5px;
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+
+}
+.prop-task {
+    height: 40px; 
+    margin:5px;
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 20px;
+}
+.service-type {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+.set-task {
+    text-align: center;
 }
