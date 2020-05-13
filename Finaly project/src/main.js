@@ -1,20 +1,17 @@
 document.addEventListener('DOMContentLoaded', function () {
     class ClientTask {
-        constructor(id, task, prop, comment) {
+        constructor(id, task, prop, comment, time) {
             this.id = id
             this.task = task
             this.prop = prop
             this.comment = comment
+            //this.time = time
         }
     }
     class View {
         showMainMenu(menu, show) {
             menu.style.transform = `translate(${show * 505}px,0)`;
         }
-        // changeInput(id, input) {
-        //     let i = id === 'location' ? 0 : 1;
-        //     document.getElementById(id).innerText = input[i].value;
-        // }
         openTasks(arrTask, activeTask, activeProp) {
             let task = '';
             let imgTask = document.getElementById('service');
@@ -27,13 +24,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>`;
             })
             imgTask.innerHTML = task;
-            console.log(arrTask, activeTask, activeProp);
             if (activeTask >= 0) {
                 document.getElementById('task').innerText = arrTask[activeTask].name.toUpperCase();
                 document.getElementById(`${'a' + activeTask}`).style.border = "1px solid gray";
                 this.openProp(arrTask[activeTask].list, activeProp);
             }
-
         }
         openProp(arrProp, active) {
             let prop = '';
@@ -44,31 +39,41 @@ document.addEventListener('DOMContentLoaded', function () {
             menuProp.innerHTML = prop;
             if (active >= 0) document.querySelectorAll('.prop-task')[active].style.border = "1px solid gray";
         }
+
         showDescription(actualTask) {
             document.querySelector('.description').innerHTML = actualTask;
         }
         showAddTask(text) {
             let newTask = document.createElement('div');
             newTask.classList.add('new-task');
-            newTask.innerHTML = text;
+            newTask.innerHTML = text + '<button class="edit" id="edit">EDIT</button><button id="delete">Delete</button>';
             document.querySelector('.wrap-menu').appendChild(newTask);
         }
     }
     class Model {
-        designTask(arrTasks, arrClient, id) {
-            if (arrClient.length) {
-                //console.log(arrTasks[arrClient[id].task].comment);
-                return `
-                    I need a&nbsp<span class ="bold"> ${arrTasks[arrClient[id].task].name.toLowerCase()} </span>
-                    &nbspto&nbsp <span class ="bold"> ${arrTasks[arrClient[id].task].list[arrClient[id].task].toLowerCase()} 
-                    &nbsp ${arrClient[id].comment} </span>`
-            } else return '';
+        designTaskPanel(arrTasks, arrClient, id) {
+            return `I need a&nbsp${arrTasks[arrClient[id].task].name.toLowerCase()} 
+                    &nbspto&nbsp ${arrTasks[arrClient[id].task].list[arrClient[id].task].toLowerCase()}<br>`
+        }
+        designTaskMenu(arrTasks, task, prop, comment) {
+            let buffer = '';
+            if (task >= 0) {
+                console.log(arrTasks[task].name, task)
+                buffer = `I need a&nbsp<span class ="bold"> ${arrTasks[task].name.toLowerCase()}</span>`;
+                if (prop >= 0) {
+                    buffer += `&nbsp to &nbsp<span class ="bold">${arrTasks[task].list[prop].toLowerCase()}</span>`;
+                    if (comment) buffer += `<span class ="bold">${', ' + comment}</span>`;
+                }
+            }
+            return buffer;
         }
         registationTask(arr, task, prop, comment) {
             let id = arr.length;
-            arr.push(new ClientTask(id, task, prop, comment));
-            console.log(arr);
+            arr.push(new ClientTask(id, task, prop, comment, new Date()));
             return id;
+        }
+        clearInit() {
+
         }
     }
     class Controller {
@@ -101,8 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 switch (event.target.id[0]) {
                     case 's': {
                         this.view.showMainMenu(document.querySelector('.main-menu'), -1);
-                        if (this.clientTasks.length)
-                            this.view.showDescription(this.model.designTask(this.tasks, this.clientTasks, this.actualId));
                     }
                         break;
                     case 'a':
@@ -112,26 +115,38 @@ document.addEventListener('DOMContentLoaded', function () {
                             ? this.prop = parseInt(event.target.id.slice(1))
                             : this.task = parseInt(event.target.id.slice(1));
                         this.view.openTasks(this.tasks, this.task, this.prop);
-                        this.view.showDescription(this.model.designTask(this.tasks, this.clientTasks, this.actualId))
+                        this.view.showDescription(this.model.designTaskMenu(this.tasks, this.task, this.prop, this.comment))
                     }
                         break;
                     case 'c': {
                         if (this.prop >= 0) {
                             this.actualId = this.model.registationTask(this.clientTasks, this.task, this.prop, this.comment);
-                            this.view.showAddTask(this.model.designTask(this.tasks, this.clientTasks, this.actualId));
+                            this.view.showAddTask(this.model.designTaskPanel(this.tasks, this.clientTasks, this.actualId));
                             this.view.showMainMenu(document.querySelector('.main-menu'), 1);
+                            this.task = -1;
+                            this.prop = -1;
+                            this.actualId = -1;
+                            this.comment = '';
+                            this.view.showDescription(' ');
+                            document.querySelector('#set-task').innerHTML = '';
+                            //document.querySelectorAll('.service').forEach(el => el.style.border = void 0);
+
+                            //document.querySelector('.map').removeChild(document.querySelector('.main-menu'));
                         }
+                    }
+                        break;
+                    case 'e': {
+
                     }
                         break;
                 }
             })
             document.querySelector('.comment').addEventListener('keyup', (event, i) => {
                 this.comment = document.querySelector('.comment').value;
-                this.view.showDescription(this.model.designTask(this.tasks, this.task, this.prop, this.comment || ''))
+                this.view.showDescription(this.model.designTaskMenu(this.tasks, this.task, this.prop, this.comment))
             });
         }
     }
     controller = new Controller(new Model(), new View());
     controller.getTasks();
-
 })
