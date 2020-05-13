@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
         openTasks(arrTask, activeTask, activeProp) {
             let task = '';
             let imgTask = document.getElementById('service');
+            //document.querySelectorAll('service').forEach(el => el.style.border = "1px solid white")
             arrTask.forEach((el, i) => {
                 task += `<div class = "set-task">
                             <div class = "service" id="${'a' + i}" >
@@ -24,11 +25,9 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>`;
             })
             imgTask.innerHTML = task;
-            if (activeTask >= 0) {
-                document.getElementById('task').innerText = arrTask[activeTask].name.toUpperCase();
-                document.getElementById(`${'a' + activeTask}`).style.border = "1px solid gray";
-                this.openProp(arrTask[activeTask].list, activeProp);
-            }
+            document.getElementById('task').innerText = arrTask[activeTask].name.toUpperCase();
+            document.getElementById(`${'a' + activeTask}`).style.border = "1px solid gray";
+            this.openProp(arrTask[activeTask].list, activeProp);
         }
         openProp(arrProp, active) {
             let prop = '';
@@ -37,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 prop += `<div class = "prop-task" id ="${'p' + i}">${el}</div>`;
             })
             menuProp.innerHTML = prop;
-            if (active >= 0) document.querySelectorAll('.prop-task')[active].style.border = "1px solid gray";
+            document.querySelectorAll('.prop-task')[active].style.border = "1px solid gray";
         }
 
         showDescription(actualTask) {
@@ -81,8 +80,8 @@ document.addEventListener('DOMContentLoaded', function () {
             this.model = model
             this.view = view
             this.tasks = []
-            this.task = -1
-            this.prop = -1
+            this.task = 0
+            this.prop = 0
             this.comment = ''
             this.clientTasks = []
             this.actualId = -1
@@ -105,15 +104,21 @@ document.addEventListener('DOMContentLoaded', function () {
             document.querySelector('.map').addEventListener('click', event => {
                 switch (event.target.id[0]) {
                     case 's': {
+                        this.view.openTasks(this.tasks, this.task, this.prop);
                         this.view.showMainMenu(document.querySelector('.main-menu'), -1);
+                        this.view.showDescription(this.model.designTaskMenu(this.tasks, this.task, this.prop))
+                    }
+                        break;
+                    case 'p': {
+                        this.prop = parseInt(event.target.id.slice(1));
+                        this.view.openTasks(this.tasks, this.task, this.prop);
+                        this.view.showDescription(this.model.designTaskMenu(this.tasks, this.task, this.prop, this.comment))
                     }
                         break;
                     case 'a':
-                    case 'd':
-                    case 'p': {
-                        event.target.id[0] === 'p'
-                            ? this.prop = parseInt(event.target.id.slice(1))
-                            : this.task = parseInt(event.target.id.slice(1));
+                    case 'd': {
+                        this.prop = 0;
+                        this.task = parseInt(event.target.id.slice(1));
                         this.view.openTasks(this.tasks, this.task, this.prop);
                         this.view.showDescription(this.model.designTaskMenu(this.tasks, this.task, this.prop, this.comment))
                     }
@@ -123,12 +128,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             this.actualId = this.model.registationTask(this.clientTasks, this.task, this.prop, this.comment);
                             this.view.showAddTask(this.model.designTaskPanel(this.tasks, this.clientTasks, this.actualId));
                             this.view.showMainMenu(document.querySelector('.main-menu'), 1);
-                            this.task = -1;
-                            this.prop = -1;
-                            this.actualId = -1;
+                            this.task = this.prop = this.actualId = 0;
                             this.comment = '';
-                            this.view.showDescription(' ');
+                            this.view.showDescription('');
                             document.querySelector('#set-task').innerHTML = '';
+                            document.querySelector('.service-type').innerHTML = '';
+                            document.querySelector('.comment').value = '';
                             //document.querySelectorAll('.service').forEach(el => el.style.border = void 0);
 
                             //document.querySelector('.map').removeChild(document.querySelector('.main-menu'));
