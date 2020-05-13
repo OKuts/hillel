@@ -9,6 +9,11 @@
     background: #ccc;
     
 }
+.wrap-menu {
+    position: absolute;
+    top: 50px;
+    left: 50px;
+}
 .map {
     width:1400px;
     /* height: calc(100%-80px); */
@@ -26,15 +31,13 @@
 }
 .new-task {
     width:330px; 
-    height: 50px;
+    min-height: 50px;
     border: 2px solid blue;
     display: flex;
     justify-content: center; 
     align-items: center;
     background: #ccc;
-    position: absolute;
-    top: 50px;
-    left: 50px;
+    margin-bottom: 5px;
 }
 .main-menu {
     width:505px; 
@@ -85,4 +88,7 @@ p {
 }
 .set-task {
     text-align: center;
+}
+.bold {
+    font-weight: bold;
 }

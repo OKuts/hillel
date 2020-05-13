@@ -2,10 +2,10 @@ module.exports = [
     {
         name: 'Cook',
         path: '/img/Cook.svg',
-        list: ['deliver lunch',
-            'deliver pizza',
-            'cook borsch',
-            'make snacks'
+        list: ['Deliver lunch',
+            'Deliver pizza',
+            'Cook borsch',
+            'Make snacks'
         ]
     },
     {
@@ -21,25 +21,25 @@ module.exports = [
     {
         name: 'Electrician',
         path: '/img/Electrician.svg',
-        list: ['repair an outlet',
-            'repair a switch',
-            'connect an appliance']
+        list: ['Repair an outlet',
+            'Repair a switch',
+            'Connect an appliance']
     },
     {
         name: 'Gardener',
         path: '/img/Gardener.svg',
         list: ['To water flowers',
-            'transplant plants',
-            'process trees',
-            'plant a flower bed']
+            'Transplant plants',
+            'Process trees',
+            'Plant a flower bed']
     },
     {
         name: 'Housekeeper',
         path: '/img/Housekeeper.svg',
-        list: ['clean in the apartment',
-            'clean in the yard',
-            'wash the windows',
-            'poison cockroaches',
-            'clean the aquarium']
+        list: ['Clean in the apartment',
+            'Clean in the yard',
+            'Wash the windows',
+            'Poison cockroaches',
+            'Clean the aquarium']
     }
 ] 
