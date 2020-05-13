@@ -39,6 +39,11 @@
     background: #ccc;
     margin-bottom: 5px;
 }
+.task {
+    border: 2px solid blue;
+    padding: 5px;
+    margin: 10px;
+}
 .main-menu {
     width:505px; 
     height: 100%;

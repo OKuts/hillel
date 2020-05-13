@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
     class ClientTask {
-        constructor(id, task, prop, comment, time) {
+        constructor(id, task, prop, comment, time, status) {
             this.id = id
             this.task = task
             this.prop = prop
             this.comment = comment
-            //this.time = time
+            this.time = time
+            this.status = status
         }
     }
     class View {
@@ -15,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
         openTasks(arrTask, activeTask, activeProp) {
             let task = '';
             let imgTask = document.getElementById('service');
-            //document.querySelectorAll('service').forEach(el => el.style.border = "1px solid white")
             arrTask.forEach((el, i) => {
                 task += `<div class = "set-task">
                             <div class = "service" id="${'a' + i}" >
@@ -44,31 +44,37 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         showAddTask(text) {
             let newTask = document.createElement('div');
-            newTask.classList.add('new-task');
+            newTask.classList.add('task');
             newTask.innerHTML = text + '<button class="edit" id="edit">EDIT</button><button id="delete">Delete</button>';
             document.querySelector('.wrap-menu').appendChild(newTask);
         }
     }
     class Model {
         designTaskPanel(arrTasks, arrClient, id) {
-            return `I need a&nbsp${arrTasks[arrClient[id].task].name.toLowerCase()} 
-                    &nbspto&nbsp ${arrTasks[arrClient[id].task].list[arrClient[id].task].toLowerCase()}<br>`
+            return `${arrClient[id].time}<br>
+                    I need a ${arrTasks[arrClient[id].task].name.toLowerCase()} 
+                    to ${ arrTasks[arrClient[id].task].list[arrClient[id].task].toLowerCase()}<br>`
         }
         designTaskMenu(arrTasks, task, prop, comment) {
             let buffer = '';
             if (task >= 0) {
-                console.log(arrTasks[task].name, task)
-                buffer = `I need a&nbsp<span class ="bold"> ${arrTasks[task].name.toLowerCase()}</span>`;
+                buffer = `I need a&nbsp<span class="bold"> ${arrTasks[task].name.toLowerCase()}</span>`;
                 if (prop >= 0) {
                     buffer += `&nbsp to &nbsp<span class ="bold">${arrTasks[task].list[prop].toLowerCase()}</span>`;
-                    if (comment) buffer += `<span class ="bold">${', ' + comment}</span>`;
+                    if (comment) buffer += `<span class="bold">${', ' + comment}</span>`;
                 }
             }
             return buffer;
         }
         registationTask(arr, task, prop, comment) {
             let id = arr.length;
-            arr.push(new ClientTask(id, task, prop, comment, new Date()));
+            let week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+            let date = new Date();
+            let hours = date.getHours().lenght === 1 ? '0' + date.getHours() : date.getHours();
+            let minutes = date.getMinutes().lenght === 1 ? '0' + date.getMinutes() : date.getMinutes();
+            date = week[date.getDay()] + ', ' + month[date.getMonth()] + ', ' + hours + ':' + minutes;
+            arr.push(new ClientTask(id, task, prop, comment, date, status));
             return id;
         }
         clearInit() {
@@ -134,9 +140,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             document.querySelector('#set-task').innerHTML = '';
                             document.querySelector('.service-type').innerHTML = '';
                             document.querySelector('.comment').value = '';
-                            //document.querySelectorAll('.service').forEach(el => el.style.border = void 0);
-
-                            //document.querySelector('.map').removeChild(document.querySelector('.main-menu'));
                         }
                     }
                         break;
