@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
             arrTask.forEach((el, i) => {
                 task += `<div class = "set-task">
                             <div class = "service" id="${'a' + i}" >
-                                <img src = "${el.path}" id="${'d' + i}">
+                                <img src = "${el.path}" id="${'t' + i}">
                             </div>
                                 ${el.name}
                         </div>`;
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         showAddTask(text) {
             let newTask = document.createElement('div');
             newTask.classList.add('task');
-            newTask.innerHTML = text + '<button class="edit" id="edit">EDIT</button><button id="delete">Delete</button>';
+            newTask.innerHTML = text;
             document.querySelector('.wrap-menu').appendChild(newTask);
         }
     }
@@ -53,7 +53,8 @@ document.addEventListener('DOMContentLoaded', function () {
         designTaskPanel(arrTasks, arrClient, id) {
             return `${arrClient[id].time}<br>
                     I need a ${arrTasks[arrClient[id].task].name.toLowerCase()} 
-                    to ${ arrTasks[arrClient[id].task].list[arrClient[id].task].toLowerCase()}<br>`
+                    to ${ arrTasks[arrClient[id].task].list[arrClient[id].task].toLowerCase()}<br>
+                    <button id=${'e' + id}>Edit</button><button id=${'d' + id}>Delete</button>`
         }
         designTaskMenu(arrTasks, task, prop, comment) {
             let buffer = '';
@@ -74,13 +75,38 @@ document.addEventListener('DOMContentLoaded', function () {
             let hours = date.getHours().lenght === 1 ? '0' + date.getHours() : date.getHours();
             let minutes = date.getMinutes().lenght === 1 ? '0' + date.getMinutes() : date.getMinutes();
             date = week[date.getDay()] + ', ' + month[date.getMonth()] + ', ' + hours + ':' + minutes;
-            arr.push(new ClientTask(id, task, prop, comment, date, status));
+            arr.push(new ClientTask(id, task, prop, comment, date, true));
             return id;
         }
-        clearInit() {
-
+        loadDB() {
+            const xhr = new XMLHttpRequest();
+            const url = 'http://localhost:3333/loadDB';
+            xhr.open('get', url);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    console.log(xhr.response);
+                }
+            }
+            xhr.send();
+        }
+        saveTaskDB(record) {
+            console.log(record);
+            record.id = 1;
+            const xhr = new XMLHttpRequest();
+            const url = 'http://localhost:3333/insDB';
+            xhr.open('post', url);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    console.log(xhr.response);
+                }
+            }
+            xhr.send(JSON.stringify(record));
         }
     }
+
+
     class Controller {
         constructor(model, view) {
             this.model = model
@@ -104,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
             xhr.send();
+            this.model.loadDB();
             this.initClick();
         }
         initClick() {
@@ -122,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
                         break;
                     case 'a':
-                    case 'd': {
+                    case 't': {
                         this.prop = 0;
                         this.task = parseInt(event.target.id.slice(1));
                         this.view.openTasks(this.tasks, this.task, this.prop);
@@ -140,11 +167,16 @@ document.addEventListener('DOMContentLoaded', function () {
                             document.querySelector('#set-task').innerHTML = '';
                             document.querySelector('.service-type').innerHTML = '';
                             document.querySelector('.comment').value = '';
+                            this.model.saveTaskDB(this.clientTasks[this.actualId]);
                         }
                     }
                         break;
                     case 'e': {
 
+                    }
+                        break;
+                    case 'd': {
+                        // console.log(event.target.id);
                     }
                         break;
                 }

@@ -6,7 +6,7 @@ let MongoClient = require('mongodb').MongoClient;
 const ObjectID = require('mongodb').ObjectID;
 //---------------------------------------------------------
 const config = require('./modules/config');
-const options = require('./modules/data');
+const options = require('./modules/options');
 //---------------------------------------------------------
 let app = express(); //creatung server
 app.use(bodyParser.json());
@@ -16,60 +16,49 @@ let db;
 const url = 'mongodb://localhost:27017';
 const dbname = "myDB";
 const client = new MongoClient(url, { useUnifiedTopology: true }); //conection
+
 app.get(/\//, (req, res) => {
-    //console.log(req.path)
+    console.log('get', req.path);
     let way = '/index.html';
-    let header = 'text/html';
-    if (req.path != '/') {
-        way = req.path;
-        header = config[req.path.slice(-3)];
+    if (req.path != '/') way = req.path;
+    switch (req.path) {
+        case '/loadDB': {
+            db.collection('tasks').find().toArray((err, records) => {
+                if (err) {
+                    console.error(err);
+                    return res.sendStatus(500);
+                }
+                res.send(JSON.stringify(records));
+            })
+        }
+            break;
+        case '/ins': {
+            res.send(JSON.stringify(options))
+        }
+            break;
+        default:
+            fs.readFile(way, (err, data) => res.send(data))
+            break;
     }
-    if (way != '/ins') {
-        fs.readFile(way, (err, data) => {
-            //res.set('Content-Type', header);
-            res.send(data);
-        })
-    } else {
-        fs.readdir(way, (err, list) => {
-            res.set('Content-Type', header);
-            res.send(JSON.stringify(options));
-        })
+})
+app.post('/insDB', (req, res) => {
+    //req.params.id;
+    let task = {
+        _id: req.body.id,
+        task: req.body.name,
+        prop: req.body.prop,
+        time: req.body.time,
+        status: req.body.status,
+        comment: req.body.comment
     }
+    db.collection('tasks').insertOne(task, err => {
+        if (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
+        res.send(task);
+    })
 });
-// app.get('/students', (req, res) => {
-//     db.collection('students').find().toArray((err, docs) => {
-//         if (err) {
-//             console.error(err);
-//             return res.sendStatus(500);
-//         }
-//         res.send(docs);
-//     })
-// });
-
-// app.get('/students/:id', (req, res) => {
-//     db.collection('students').findOne({ _id: ObjectID(req.params.id) }, (err, docs) => {
-//         if (err) {
-//             console.error(err);
-//             return res.sendStatus(500);
-//         }
-//         res.send(docs);
-//     })
-// })
-
-// app.post('/students', (req, res) => {
-//     req.params.id;
-//     let student = {
-//         _id: req.body.id,
-//         name: req.body.name
-//     }
-//     db.collection('students').insertOne(student, err => {
-//         if (err) {
-//             console.error(err);
-//             return res.sendStatus(500);
-//         }
-//         res.send(student);
-//     })
-// });
 
 // app.put('/students/:id', (req, res) => {
 //     db.collection('students').updateOne({ _id: ObjectID(req.params.id) }, { $set: { name: req.body.name } }, err => {
