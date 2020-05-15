@@ -90,6 +90,11 @@ class Model {
         }
         xhr.send(JSON.stringify(obj));//
     }
+    searcheMaxId(arr) {
+        let max = 0;
+        arr.forEach(el => { if (el.orederId > max) max = el.orderId });
+        return max;
+    }
 }
 class Controller {
     constructor(model, view) {
@@ -100,12 +105,11 @@ class Controller {
         this.prop = 0
         this.comment = ''
         this.clientTasks = []
-        this.actualId = 2
+        this.actualId = 0
     }
     getTasks() {
         const xhr = new XMLHttpRequest();
         xhr.open("GET", 'http://localhost:3333/insTasks', false);
-        //xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 this.allTasks = JSON.parse(xhr.response);
@@ -116,13 +120,17 @@ class Controller {
         xhrDB.onreadystatechange = () => {
             if (xhrDB.readyState === XMLHttpRequest.DONE) {
                 this.clientTasks = JSON.parse(xhrDB.response);
-            } //else { this.clientTasks = [] }
+            }
         }
-        xhrDB.open("GET", 'http://localhost:3333/loadDB', false); //this.model.designTaskPanel
+        xhrDB.open("GET", 'http://localhost:3333/loadDB', false);
         xhrDB.send();
+        this.actualId = this.model.searcheMaxId(this.clientTasks);
+        this.clientTasks.forEach((el, i) => {
+            this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks, i));
 
+        })
         this.initClick();
-        this.clientTasks.forEach((el, i) => console.log(el.date));
+
     }
     initClick() {
         document.querySelector('.map').addEventListener('click', event => {
@@ -150,8 +158,8 @@ class Controller {
                     break;
                 case 'c': {
                     if (this.prop >= 0) {
-                        this.actualId === -1 ? this.actualId = 0 : this.actualId;
                         this.model.registationTask(this.clientTasks, this.task, this.prop, this.comment, this.actualId);
+                        this.actualId += 1;
                         this.model.addTaskDB(this.clientTasks[this.clientTasks.length - 1]);
                         this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks, this.clientTasks.length - 1));
                         this.view.showMainMenu(document.querySelector('.main-menu'), 1);

@@ -29,7 +29,7 @@ app.get('/insTasks', (req, res) => {
 })
 app.post('/insDB', (req, res) => {
     let task = {
-        idOrder: req.body.orderId,
+        orderId: req.body.orderId,
         task: req.body.task,
         prop: req.body.prop,
         date: req.body.date,
