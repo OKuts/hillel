@@ -12,7 +12,6 @@ class View {
         menu.style.transform = `translate(${show * 505}px,0)`;
     }
     openTasks(arrTask, activeTask, activeProp) {
-        console.log(arrTask, activeTask, activeProp);
         let task = '';
         let imgTask = document.getElementById('service');
         arrTask.forEach((el, i) => {
@@ -49,11 +48,11 @@ class View {
     }
 }
 class Model {
-    designTaskPanel(arrTasks, arrClient, id) {
-        return `${arrClient[id].date}<br>
-                    I need a ${arrTasks[arrClient[id].task].name.toLowerCase()} 
-                    to ${ arrTasks[arrClient[id].task].list[arrClient[id].task].toLowerCase()}<br>
-                    <button id=${'e' + id}>Edit</button><button id=${'d' + id}>Delete</button>`
+    designTaskPanel(arrTasks, oneObj, num) {
+        return `${oneObj.date}<br>
+                    I need a ${arrTasks[oneObj.task].name.toLowerCase()} 
+                    to ${ arrTasks[oneObj.task].list[oneObj.prop].toLowerCase()}<br>
+                    <button id=${'e' + num}>Edit</button><button id=${'d' + num}>Delete</button>`
     }
     designTaskMenu(arrTasks, task, prop, comment) {
         let buffer = '';
@@ -66,7 +65,7 @@ class Model {
         }
         return buffer;
     }
-    registationTask(arr, task, prop, comment, _id) {
+    registationTask(arr, task, prop, comment, _id, ) {
         let id = arr.length;
         let week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -74,11 +73,10 @@ class Model {
         let hours = date.getHours().lenght === 1 ? '0' + date.getHours() : date.getHours();
         let minutes = date.getMinutes().lenght === 1 ? '0' + date.getMinutes() : date.getMinutes();
         date = week[date.getDay()] + ', ' + month[date.getMonth()] + ', ' + hours + ':' + minutes;
-
-        arr.push(new ClientTask(_id, task, prop, comment, date));
+        arr.push({ _id, task, prop, date, comment });
     }
+
     postDeletePutDB(method, url, body = null) {
-        console.log(method, url, body);
         const xhr = new XMLHttpRequest();
         xhr.open(method, 'http://localhost:3333' + url);
         //xhr.setRequestHeader('Content-Type', 'application/json');
@@ -104,8 +102,8 @@ class Model {
     }
     searcheMaxId(arr) {
         let max = 0;
-        arr.forEach(el => { if (el.orederId > max) max = el._id });
-        return max;
+        arr.forEach(el => { if (el._id > max) max = el._id });
+        return max + 1;
     }
     deleteTaskFromArray(arr, num) {
         arr.splice(num, 1);
@@ -142,13 +140,16 @@ class Controller {
         xhrDB.send();
         this.actualId = this.model.searcheMaxId(this.clientTasks);
         this.clientTasks.forEach((el, i) => {
-            this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks, i));
+            this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[i], i));
         })
+        console.log(this.clientTasks)
         this.initClick();
 
     }
     initClick() {
-        document.querySelector('.map').addEventListener('click', event => {
+        let element;
+        document.querySelector('.map').addEventListener('mouseup', event => {
+            element = event.target.id.slice(1);
             switch (event.target.id[0]) {
                 case 's': {
                     this.view.openTasks(this.allTasks, this.task, this.prop);
@@ -158,46 +159,48 @@ class Controller {
                 }
                     break;
                 case 'p': {
-                    this.prop = parseInt(event.target.id.slice(1));
+                    this.prop = parseInt(element);
                     this.view.openTasks(this.allTasks, this.task, this.prop);
                     this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.task, this.prop, this.comment))
                 }
                     break;
                 case 'a':
                 case 't': {
-                    this.prop = 0;
-                    this.task = parseInt(event.target.id.slice(1));
+                    this.task = parseInt(element);
                     this.view.openTasks(this.allTasks, this.task, this.prop);
                     this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.task, this.prop, this.comment))
                 }
                     break;
                 case 'c': {
-                    if (this.prop >= 0) {
-                        this.model.registationTask(this.clientTasks, this.task, this.prop, this.comment, this.actualId);
-                        this.actualId += 1;
-                        this.model.addTaskDB(this.clientTasks[this.clientTasks.length - 1]);
-                        this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks, this.clientTasks.length - 1));
-                        this.view.showMainMenu(document.querySelector('.main-menu'), 1);
-                        this.task = this.prop = 0;
-                        this.comment = '';
-                        this.view.showDescription('');
-                        document.querySelector('#set-task').innerHTML = '';
-                        document.querySelector('.service-type').innerHTML = '';
-                        document.querySelector('.comment').value = '';
-                    }
+                    this.model.registationTask(this.clientTasks, this.task, this.prop, this.comment, this.actualId);
+                    this.actualId += 1;
+                    this.model.addTaskDB(this.clientTasks[this.clientTasks.length - 1]);
+                    this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[this.clientTasks.length - 1], this.clientTasks.length - 1));
+                    this.view.showMainMenu(document.querySelector('.main-menu'), 1);
+                    this.task = this.prop = 0;
+                    this.comment = '';
+                    this.view.showDescription('');
+                    document.querySelector('#set-task').innerHTML = '';
+                    document.querySelector('.service-type').innerHTML = '';
+                    document.querySelector('.comment').value = '';
+
                 }
                     break;
                 case 'e': {
+                    this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.clientTasks[element].task, this.clientTasks[element].prop));
+                    this.view.openTasks(this.allTasks, this.clientTasks[element].task, this.clientTasks[element].prop);
+                    document.querySelector('.comment').value = this.clientTasks[element].coment;
+                    this.view.showMainMenu(document.querySelector('.main-menu'), -1);
 
                 }
                     break;
                 case 'd': {
-                    this.model.deleteTaskFromArray(this.clientTasks, event.target.id.slice(1));
+                    console.log(this.clientTasks[element], element);
+                    this.model.postDeletePutDB('delete', '/del/' + this.clientTasks[element]._id)
+                    this.model.deleteTaskFromArray(this.clientTasks, element);
                     this.clientTasks.forEach((el, i) => {
-                        this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks, i));
+                        this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[i], i));
                     })
-                    console.log(this.clientTasks[event.target.id.slice(1)]);
-                    this.model.postDeletePutDB('delete', '/del/' + this.clientTasks[event.target.id.slice(1)]._id)
                 }
                     break;
             }

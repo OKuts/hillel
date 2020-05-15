@@ -48,7 +48,7 @@ app.post('/insDB', (req, res) => {
 //     });
 // });
 app.delete('/del/:id', (req, res) => {
-    console.log(typeof req.params.id);
+    console.log(req.params.id);
     db.collection('servis').deleteOne({ _id: parseInt(req.params.id) }, (err) => {
         if (err) { res.sendStatus(500) }
         res.sendStatus(200);
