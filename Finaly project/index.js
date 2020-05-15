@@ -29,20 +29,15 @@ app.get('/insTasks', (req, res) => {
 })
 app.post('/insDB', (req, res) => {
     let task = {
-        orderId: req.body.orderId,
+        _id: req.body._id,
         task: req.body.task,
         prop: req.body.prop,
         date: req.body.date,
         comment: req.body.comment
     }
-    //console.log(task)
     db.collection('servis').insertOne(task, err => {
-        if (err) {
-            console.error(err);
-            return res.sendStatus(500);
-        }
-        //console.log(task);
-        res.send(task);
+        if (err) { return res.sendStatus(500); }
+        res.sendStatus(200);
     })
 })
 
@@ -52,16 +47,13 @@ app.post('/insDB', (req, res) => {
 //         res.sendStatus(200);
 //     });
 // });
-
-// app.delete('/students/:id', (req, res) => {
-//     db.collection('students').deleteOne({ _id: ObjectID(req.params.id) }, (err) => {
-//         if (err) {
-//             console.error(err);
-//             return res.sendStatus(500);
-//         }
-//         res.sendStatus(200);
-//     })
-// })
+app.delete('/del/:id', (req, res) => {
+    console.log(typeof req.params.id);
+    db.collection('servis').deleteOne({ _id: parseInt(req.params.id) }, (err) => {
+        if (err) { res.sendStatus(500) }
+        res.sendStatus(200);
+    })
+})
 
 client.connect(err => {
     console.log('Connection success');

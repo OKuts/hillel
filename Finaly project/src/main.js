@@ -1,6 +1,6 @@
 class ClientTask {
-    constructor(orderId, task, prop, comment, date) {
-        this.orderId = orderId
+    constructor(_id, task, prop, comment, date) {
+        this._id = _id
         this.task = task
         this.prop = prop
         this.comment = comment
@@ -66,7 +66,7 @@ class Model {
         }
         return buffer;
     }
-    registationTask(arr, task, prop, comment, orderId) {
+    registationTask(arr, task, prop, comment, _id) {
         let id = arr.length;
         let week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -74,11 +74,23 @@ class Model {
         let hours = date.getHours().lenght === 1 ? '0' + date.getHours() : date.getHours();
         let minutes = date.getMinutes().lenght === 1 ? '0' + date.getMinutes() : date.getMinutes();
         date = week[date.getDay()] + ', ' + month[date.getMonth()] + ', ' + hours + ':' + minutes;
-        //console.log(orderId, task, prop, comment, date);
-        arr.push(new ClientTask(orderId, task, prop, comment, date));
+
+        arr.push(new ClientTask(_id, task, prop, comment, date));
+    }
+    postDeletePutDB(method, url, body = null) {
+        console.log(method, url, body);
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, 'http://localhost:3333' + url);
+        //xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                //this.allTasks = JSON.parse(xhr.response);
+                console.log('ok');
+            }
+        }
+        xhr.send(JSON.stringify(body));//
     }
     addTaskDB(obj) {
-        console.log(typeof (obj), obj);
         const xhr = new XMLHttpRequest();
         xhr.open("POST", 'http://localhost:3333/insDB');
         xhr.setRequestHeader('Content-Type', 'application/json');
@@ -92,8 +104,12 @@ class Model {
     }
     searcheMaxId(arr) {
         let max = 0;
-        arr.forEach(el => { if (el.orederId > max) max = el.orderId });
+        arr.forEach(el => { if (el.orederId > max) max = el._id });
         return max;
+    }
+    deleteTaskFromArray(arr, num) {
+        arr.splice(num, 1);
+        document.querySelector('.wrap-menu').innerHTML = '';
     }
 }
 class Controller {
@@ -127,7 +143,6 @@ class Controller {
         this.actualId = this.model.searcheMaxId(this.clientTasks);
         this.clientTasks.forEach((el, i) => {
             this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks, i));
-
         })
         this.initClick();
 
@@ -177,7 +192,12 @@ class Controller {
                 }
                     break;
                 case 'd': {
-                    // console.log(event.target.id);
+                    this.model.deleteTaskFromArray(this.clientTasks, event.target.id.slice(1));
+                    this.clientTasks.forEach((el, i) => {
+                        this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks, i));
+                    })
+                    console.log(this.clientTasks[event.target.id.slice(1)]);
+                    this.model.postDeletePutDB('delete', '/del/' + this.clientTasks[event.target.id.slice(1)]._id)
                 }
                     break;
             }
