@@ -85,6 +85,7 @@ class Model {
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 //this.allTasks = JSON.parse(xhr.response);
+                console.log('ok');
             }
         }
         xhr.send(JSON.stringify(obj));//
@@ -121,7 +122,7 @@ class Controller {
         xhrDB.send();
 
         this.initClick();
-        this.clientTasks.forEach((el, i) => console.log(el));
+        this.clientTasks.forEach((el, i) => console.log(el.date));
     }
     initClick() {
         document.querySelector('.map').addEventListener('click', event => {
@@ -130,6 +131,7 @@ class Controller {
                     this.view.openTasks(this.allTasks, this.task, this.prop);
                     this.view.showMainMenu(document.querySelector('.main-menu'), -1);
                     this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.task, this.prop))
+
                 }
                     break;
                 case 'p': {

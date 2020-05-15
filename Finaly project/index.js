@@ -21,30 +21,29 @@ app.get('/loadDB', (req, res) => {
             console.error(err);
             return res.sendStatus(500);
         }
-        res.send(records);
+        res.send(JSON.stringify(records));
     })
 })
 app.get('/insTasks', (req, res) => {
     res.send(JSON.stringify(options))
 })
 app.post('/insDB', (req, res) => {
-    console.log('done', req.body);
-    // let task = {
-    //     idOrder: req.body.orderId,
-    //     task: req.body.task,
-    //     prop: req.body.prop,
-    //     time: req.body.date,
-    //     comment: req.body.comment
-    // }
-    //console.log('obj', req.body.task)
-    // db.collection('servis').insertOne(task, err => {
-    //     if (err) {
-    //         console.error(err);
-    //         return res.sendStatus(500);
-    //     }
-    //     console.log(task);
-    res.send("task");
-    // })
+    let task = {
+        idOrder: req.body.orderId,
+        task: req.body.task,
+        prop: req.body.prop,
+        date: req.body.date,
+        comment: req.body.comment
+    }
+    //console.log(task)
+    db.collection('servis').insertOne(task, err => {
+        if (err) {
+            console.error(err);
+            return res.sendStatus(500);
+        }
+        //console.log(task);
+        res.send(task);
+    })
 })
 
 // app.put('/students/:id', (req, res) => {
