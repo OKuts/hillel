@@ -16,7 +16,7 @@ const url = 'mongodb://localhost:27017';
 const dbname = "myDB";
 const client = new MongoClient(url, { useUnifiedTopology: true });
 app.get('/loadDB', (req, res) => {
-    db.collection('servis').find().toArray((err, records) => {
+    db.collection('servises').find().toArray((err, records) => {
         if (err) {
             console.error(err);
             return res.sendStatus(500);
@@ -28,6 +28,7 @@ app.get('/insTasks', (req, res) => {
     res.send(JSON.stringify(options))
 })
 app.post('/insDB', (req, res) => {
+    console.log('post', req.body)
     let task = {
         _id: req.body._id,
         task: req.body.task,
@@ -35,23 +36,25 @@ app.post('/insDB', (req, res) => {
         date: req.body.date,
         comment: req.body.comment
     }
-    db.collection('servis').insertOne(task, err => {
+    db.collection('servises').insertOne(task, err => {
         if (err) { return res.sendStatus(500); }
         res.sendStatus(200);
     })
 })
 
-// app.put('/students/:id', (req, res) => {
-//     db.collection('students').updateOne({ _id: ObjectID(req.params.id) }, { $set: { name: req.body.name } }, err => {
-//         { console.error(err) }
-//         res.sendStatus(200);
-//     });
-// });
+app.put('/put/:id', (req, res) => {
+    console.log('put', req.body)
+    db.collection('servises').updateOne({ _id: parseInt(req.params.id) }, { $set: { task: req.body.task, prop: req.body.prop, date: req.body.date, comment: req.body.comment } }, err => {
+        if (err) return res.sendStatus(500);
+    });
+    res.sendStatus(200);
+});
+
 app.delete('/del/:id', (req, res) => {
-    console.log(req.params.id);
-    db.collection('servis').deleteOne({ _id: parseInt(req.params.id) }, (err) => {
+    console.log('del', req.body, req.params.id)
+    db.collection('servises').deleteOne({ _id: parseInt(req.params.id) }, (err) => {
         if (err) { res.sendStatus(500) }
-        res.sendStatus(200);
+
     })
 })
 

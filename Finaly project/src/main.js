@@ -9,9 +9,11 @@ class ClientTask {
 }
 class View {
     showMainMenu(menu, show) {
+        let flag = show === 1 ? true : false;
         menu.style.transform = `translate(${show * 505}px,0)`;
+        this.changeVisibleDOM([['#done', 'visible', flag], ['.panel', 'active', flag], ['#start', 'active', flag]])
     }
-    openTasks(arrTask, activeTask, activeProp) {
+    openTasks(arrTask, activeTask, activeProp, activeComment) {
         let task = '';
         let imgTask = document.getElementById('service');
         arrTask.forEach((el, i) => {
@@ -26,6 +28,7 @@ class View {
         document.getElementById('task').innerText = arrTask[activeTask].name.toUpperCase();
         document.getElementById(`${'a' + activeTask}`).style.border = "1px solid gray";
         this.openProp(arrTask[activeTask].list, activeProp);
+        document.querySelector('.comment').value = activeComment;
     }
     openProp(arrProp, active) {
         let prop = '';
@@ -40,9 +43,10 @@ class View {
     showDescription(actualTask) {
         document.querySelector('.description').innerHTML = actualTask;
     }
-    showAddTask(text) {
+    showAddTask(text, num) {
         let newTask = document.createElement('div');
         newTask.classList.add('task');
+        newTask.classList.add('k' + num);
         newTask.innerHTML = text;
         document.querySelector('.wrap-menu').appendChild(newTask);
     }
@@ -83,16 +87,18 @@ class Model {
         let week = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
         let date = new Date();
-        let hours = date.getHours().lenght === 1 ? '0' + date.getHours() : date.getHours();
-        let minutes = date.getMinutes().lenght === 1 ? '0' + date.getMinutes() : date.getMinutes();
+        let hours = parseInt(date.getHours()) < 10 ? '0' + date.getHours() : date.getHours();
+        let minutes = parseInt(date.getMinutes()) < 10 ? '0' + date.getMinutes() : date.getMinutes();
         date = week[date.getDay()] + ', ' + month[date.getMonth()] + ', ' + hours + ':' + minutes;
+        if (!comment) comment = '';
         arr.push({ _id, task, prop, date, comment });
     }
 
     postDeletePutDB(method, url, body = null) {
+        console.log('edit', method, url, body);
         const xhr = new XMLHttpRequest();
         xhr.open(method, 'http://localhost:3333' + url);
-        //xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 //this.allTasks = JSON.parse(xhr.response);
@@ -122,6 +128,9 @@ class Model {
         arr.splice(num, 1);
         document.querySelector('.wrap-menu').innerHTML = '';
     }
+    cleanPanels() {
+
+    }
 
 }
 class Controller {
@@ -134,6 +143,7 @@ class Controller {
         this.comment = ''
         this.clientTasks = []
         this.actualId = 0
+        this.editId = 0
     }
     getTasks() {
         const xhr = new XMLHttpRequest();
@@ -148,15 +158,17 @@ class Controller {
         xhrDB.onreadystatechange = () => {
             if (xhrDB.readyState === XMLHttpRequest.DONE) {
                 this.clientTasks = JSON.parse(xhrDB.response);
-            }
+            } else this.clientTasks = []
         }
         xhrDB.open("GET", 'http://localhost:3333/loadDB', false);
         xhrDB.send();
+
         this.actualId = this.model.searcheMaxId(this.clientTasks);
+
         this.clientTasks.forEach((el, i) => {
-            this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[i], i));
+            this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[i], i), i);
         })
-        console.log(this.clientTasks)
+        console.log(this.allTasks);
         this.initClick();
 
     }
@@ -166,10 +178,9 @@ class Controller {
             element = event.target.id.slice(1);
             switch (event.target.id[0]) {
                 case 's': { //new task
-                    this.view.openTasks(this.allTasks, this.task, this.prop);
+                    this.view.changeVisibleDOM([['#create', 'visible', true], ['#rewrite', 'visible', false]]);
+                    this.view.openTasks(this.allTasks, 0, 0, '');
                     this.view.changeInnerText('#new', 'NEW TASK')
-                    this.view.changeVisibleDOM([['#done', 'visible', false], ['.panel', 'active', false],
-                    ['#start', 'active', false]])
                     this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.task, this.prop))
                     this.view.showMainMenu(document.querySelector('.main-menu'), -1);
                 }
@@ -188,10 +199,11 @@ class Controller {
                 }
                     break;
                 case 'c': { //create
+                    let amnTasks = this.clientTasks.length;
                     this.model.registationTask(this.clientTasks, this.task, this.prop, this.comment, this.actualId);
                     this.actualId += 1;
-                    this.model.addTaskDB(this.clientTasks[this.clientTasks.length - 1]);
-                    this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[this.clientTasks.length - 1], this.clientTasks.length - 1));
+                    this.model.addTaskDB(this.clientTasks[amnTasks]);
+                    this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[amnTasks], amnTasks), amnTasks);
                     this.view.showMainMenu(document.querySelector('.main-menu'), 1);
                     this.task = this.prop = 0;
                     this.comment = '';
@@ -199,30 +211,47 @@ class Controller {
                     document.querySelector('#set-task').innerHTML = '';
                     document.querySelector('.service-type').innerHTML = '';
                     document.querySelector('.comment').value = '';
-                    this.view.changeVisibleDOM([['.panel', 'active', true]])
                 }
                     break;
                 case 'e': { //edit
-                    this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.clientTasks[element].task, this.clientTasks[element].prop));
-                    this.view.openTasks(this.allTasks, this.clientTasks[element].task, this.clientTasks[element].prop);
-                    document.querySelector('.comment').value = this.clientTasks[element].comment;
+                    let tsk = this.clientTasks[element];
+                    this.view.showDescription(this.model.designTaskMenu(this.allTasks, tsk.task, tsk.prop), element);
+                    this.view.openTasks(this.allTasks, tsk.task, tsk.prop);
+                    document.querySelector('.comment').value = tsk.comment;
+                    this.task = tsk.task;
+                    this.prop = tsk.prop;
+                    this.comment = tsk.comment;
                     this.view.changeInnerText('#new', 'EDIT TASK')
                     this.view.showMainMenu(document.querySelector('.main-menu'), -1);
-                    this.view.changeVisibleDOM([['.new-task', 'active', false], ['#create', 'visible', false],
-                    ['.panel', 'active', false], ['#done', 'visible', true]])
+                    this.view.changeVisibleDOM([['#create', 'visible', false], ['#rewrite', 'visible', true], ['.k' + element, 'active', false]]);
+                    this.editId = element;
+
                 }
                     break;
-                case 'd': { // done change
-                    console.log(this.clientTasks[element], element);
-                    this.model.postDeletePutDB('delete', '/del/' + this.clientTasks[element]._id)
+                case 'd': { // delete
                     this.model.deleteTaskFromArray(this.clientTasks, element);
+                    this.model.postDeletePutDB('delete', '/del/' + this.clientTasks[element]._id, this.clientTasks[element])
+
                     this.clientTasks.forEach((el, i) => {
-                        this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[i], i));
+                        this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[i], i), i);
                     })
                 }
                     break;
-                case 'n': { //cancel
-                    this.view.changeVisibleDOM([['.panel', 'active', true], ['.new-task', 'active', true]]);
+                case 'n': { //not change (cancel)
+                    this.view.showMainMenu(document.querySelector('.main-menu'), 1);
+                    this.view.changeVisibleDOM([['.task', 'active', true]]);
+                }
+                    break;
+                case 'r': { //rewriwe change
+                    this.clientTasks[this.editId].task = this.task;
+                    this.clientTasks[this.editId].prop = this.prop;
+                    this.clientTasks[this.editId].comment = this.comment;
+                    this.model.postDeletePutDB('put', '/put/' + this.clientTasks[this.editId]._id, this.clientTasks[this.editId])
+                    this.view.changeVisibleDOM([['.k' + this.editId, 'active', true]]);
+                    document.querySelector('.wrap-menu').innerHTML = '';
+                    this.clientTasks.forEach((el, i) => {
+                        this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[i], i), i);
+                    })
                     this.view.showMainMenu(document.querySelector('.main-menu'), 1);
                 }
                     break;
