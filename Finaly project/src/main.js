@@ -46,13 +46,26 @@ class View {
         newTask.innerHTML = text;
         document.querySelector('.wrap-menu').appendChild(newTask);
     }
+    changeVisibleDOM(arr) {
+        let elDOM;
+        arr.forEach((el, i) => {
+            elDOM = document.querySelectorAll(el[0]);
+            elDOM.forEach((dom) => {
+                !el[2] ? dom.classList.add(el[1]) : dom.classList.remove(el[1])
+            })
+        })
+    }
+    changeInnerText(ident, text) {
+        document.querySelector(ident).innerText = text;
+    }
 }
 class Model {
     designTaskPanel(arrTasks, oneObj, num) {
         return `${oneObj.date}<br>
                     I need a ${arrTasks[oneObj.task].name.toLowerCase()} 
                     to ${ arrTasks[oneObj.task].list[oneObj.prop].toLowerCase()}<br>
-                    <button id=${'e' + num}>Edit</button><button id=${'d' + num}>Delete</button>`
+                    <button class="button panel" id=${'e' + num}>Edit</button>
+                    <button class="button panel" id=${'d' + num}>Delete</button>`
     }
     designTaskMenu(arrTasks, task, prop, comment) {
         let buffer = '';
@@ -109,6 +122,7 @@ class Model {
         arr.splice(num, 1);
         document.querySelector('.wrap-menu').innerHTML = '';
     }
+
 }
 class Controller {
     constructor(model, view) {
@@ -151,27 +165,29 @@ class Controller {
         document.querySelector('.map').addEventListener('mouseup', event => {
             element = event.target.id.slice(1);
             switch (event.target.id[0]) {
-                case 's': {
+                case 's': { //new task
                     this.view.openTasks(this.allTasks, this.task, this.prop);
-                    this.view.showMainMenu(document.querySelector('.main-menu'), -1);
+                    this.view.changeInnerText('#new', 'NEW TASK')
+                    this.view.changeVisibleDOM([['#done', 'visible', false], ['.panel', 'active', false],
+                    ['#start', 'active', false]])
                     this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.task, this.prop))
-
+                    this.view.showMainMenu(document.querySelector('.main-menu'), -1);
                 }
                     break;
-                case 'p': {
+                case 'p': { //change task
                     this.prop = parseInt(element);
                     this.view.openTasks(this.allTasks, this.task, this.prop);
                     this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.task, this.prop, this.comment))
                 }
                     break;
                 case 'a':
-                case 't': {
+                case 't': { //change prop
                     this.task = parseInt(element);
                     this.view.openTasks(this.allTasks, this.task, this.prop);
                     this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.task, this.prop, this.comment))
                 }
                     break;
-                case 'c': {
+                case 'c': { //create
                     this.model.registationTask(this.clientTasks, this.task, this.prop, this.comment, this.actualId);
                     this.actualId += 1;
                     this.model.addTaskDB(this.clientTasks[this.clientTasks.length - 1]);
@@ -183,24 +199,31 @@ class Controller {
                     document.querySelector('#set-task').innerHTML = '';
                     document.querySelector('.service-type').innerHTML = '';
                     document.querySelector('.comment').value = '';
-
+                    this.view.changeVisibleDOM([['.panel', 'active', true]])
                 }
                     break;
-                case 'e': {
+                case 'e': { //edit
                     this.view.showDescription(this.model.designTaskMenu(this.allTasks, this.clientTasks[element].task, this.clientTasks[element].prop));
                     this.view.openTasks(this.allTasks, this.clientTasks[element].task, this.clientTasks[element].prop);
-                    document.querySelector('.comment').value = this.clientTasks[element].coment;
+                    document.querySelector('.comment').value = this.clientTasks[element].comment;
+                    this.view.changeInnerText('#new', 'EDIT TASK')
                     this.view.showMainMenu(document.querySelector('.main-menu'), -1);
-
+                    this.view.changeVisibleDOM([['.new-task', 'active', false], ['#create', 'visible', false],
+                    ['.panel', 'active', false], ['#done', 'visible', true]])
                 }
                     break;
-                case 'd': {
+                case 'd': { // done change
                     console.log(this.clientTasks[element], element);
                     this.model.postDeletePutDB('delete', '/del/' + this.clientTasks[element]._id)
                     this.model.deleteTaskFromArray(this.clientTasks, element);
                     this.clientTasks.forEach((el, i) => {
                         this.view.showAddTask(this.model.designTaskPanel(this.allTasks, this.clientTasks[i], i));
                     })
+                }
+                    break;
+                case 'n': { //cancel
+                    this.view.changeVisibleDOM([['.panel', 'active', true], ['.new-task', 'active', true]]);
+                    this.view.showMainMenu(document.querySelector('.main-menu'), 1);
                 }
                     break;
             }
