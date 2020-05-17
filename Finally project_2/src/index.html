@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASHBOARD</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="shortcut icon" href="/img/kuts.png" type="image/png">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&amp;subset=cyrillic" rel="stylesheet">
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <div class="geo"><img src="img/Combined Shape Copy.svg"></div>
+    <div class="vrapper">
+        <div class="top-menu"></div>
+        <div class="map">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d21094.335712332246!2d35.2241598!3d48.632962899999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sru!2sua!4v1589562192955!5m2!1sru!2sua"
+                width="100%" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="true"
+                tabindex="0"></iframe>
+            <div class="new-task" id="start"> + NEW TASK</div>
+            <div class="wrap-menu">
+            </div>
+            <div class="main-menu">
+                <div>
+                    <p id="new"></p>
+                    <div class="description"></div>
+                    <div id="location"></div>
+                    <div class="btn">
+                        <button class="btn3 large" id="create"> CREATE TASK</button>
+                        <button class="btn3 large" id="rewrite"> DONE</button>
+                        <button class="btn1 little" id="notchange"> CANCEL</button>
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <p class="gray">LOCATION</p>
+                    <input class="comment" id="inp1" placeholder="Adress">
+                </div>
+                <div>
+                    <p class="gray"> SERVICE TYPE</p>
+                    <div class="service-type" id="service">
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <p class="gray"><span id="task"></span> TASKS</p>
+                    <div id="set-task">
+                    </div>
+                </div>
+                <hr>
+                <div>
+                    <p class="gray">TASK DESCRIPTION </p>
+                    <input class="comment" id="inp2" placeholder="Comment">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
